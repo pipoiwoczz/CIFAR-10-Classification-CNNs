@@ -1,2 +1,7 @@
 torch
 torchvision
+matplotlib
+imageio
+scikit-learn
+pandas
+tqdm

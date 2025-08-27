@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  trainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Build-time args (only used during build)
+      args:
+        CUDA_VERSION: "12.1.0"   # change here when needed
+    image: cifar10-gpu:latest
+
+    # GPU access (works with NVIDIA Container Toolkit)
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    # Mount your project so runs/checkpoints persist locally
+    volumes:
+      - ./:/app
+      - ./runs:/app/runs
+
+    working_dir: /app
+
+    # Default command = your Dockerfile's CMD
+    # You can override it below with "command:" to pass script args
+    # Example (uncomment to use):
+    command: ["python", "train.py", "--epochs", "300", "--batch-size", "256",  "--weight_decay", "0.0003", "--drop_out", "0.3", "--final"]
+    # command: ["python", "grid_search.py"]
+    # If your script reads environment variables instead of CLI flags:
+    # env_file:
+    #   - .env
