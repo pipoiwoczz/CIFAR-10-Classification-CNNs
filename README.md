@@ -34,6 +34,13 @@ A clean, reproducible **CIFAR‑10** training pipeline in PyTorch with:
 
 ## Installation
 
+*Recommended: Create a virtual environment for this project.*
+
+**Requirements:**
+- Python version (3.9+)
+- CUDA version (12.1)
+- PyTorch version (2.2.x tested)
+
 ### 1) Environment (pip)
 ```bash
 # 1) Clone
@@ -49,10 +56,17 @@ pip install -r requirements.txt
 
 ### 2) Train a model
 ```bash
-python train.py   --model resnet18   --epochs 60   --batch-size 512   --base-lr 5e-3   --weight-decay 5e-4   --dropout 0.3   --label-smoothing 0.0   --seed 42   --save-dir outputs/resnet18
+python train.py  --final --models resnet18   --epochs 60   --batch-size 512   --base-lr 5e-3   --weight-decay 5e-4   --dropout 0.3   --label-smoothing 0.1    --save-dir outputs/resnet18
 ```
 Key flags (common):  
-`--model {simple_cnn,resnet18,resnet34,densenet121,...}` · `--epochs` · `--batch-size` · `--base-lr` · `--weight-decay` · `--dropout` · `--label-smoothing` · `--seed` · `--save-dir` · `--device {cpu,cuda}`
+`--models [simple_cnn,resnet18,resnet34,densenet121,...]` · `--epochs` · `--batch-size` · `--base-lr` · `--weight-decay` · `--dropout` · `--label-smoothing` · `--save-dir` · `--device {cpu,cuda}`
+`--final or --cv`: Choose whether to run a final training or cross-validation.
+
+You can also train multiple models at once by passing a space-separated list to `--models`.
+Example:
+```bash
+python train.py  --final --models resnet18 simple_cnn   --epochs 60   --batch-size 512   --base-lr 5e-3   --weight-decay 5e-4   --dropout 0.3   --label-smoothing 0.1    --save-dir outputs/
+```
 
 ### 3) Evaluate a checkpoint
 ```bash
@@ -102,7 +116,7 @@ Evaluate trained models. Change the `model` save path and `model architecture` i
 docker build -t cifar10-cnn .
 
 # Train with GPU (mount outputs)
-docker run --gpus all --rm -it   -v $(pwd)/outputs:/app/outputs   -v $(pwd)/reports:/app/reports   cifar10-cnn   python train.py --model resnet18 --epochs 60 --batch-size 512
+docker run --gpus all --rm -it   -v $(pwd)/outputs:/app/outputs   -v $(pwd)/reports:/app/reports   cifar10-cnn   python train.py --final --model resnet18 --epochs 60 --batch-size 512
 ```
 
 **docker-compose.yml** (example):
@@ -173,8 +187,6 @@ Change the hyperparameters in the script as needed. Key changes can be made to t
 
 ## 🧠 Models
 
-## 🧠 Models
-
 - **SimpleCNN**: a lightweight baseline CNN for CIFAR-10 (stacked 3×3 conv blocks, BN, ReLU, pooling, dropout).  
 - **ResNet-CIFAR (ResNet-18 variant)**: adapted ResNet with 3×3 stem (no 7×7 or maxpool) for 32×32 images.  
 - **WideResNet-28-10**: deeper and wider variant of ResNet, tuned for CIFAR-10 with adjustable drop rate.  (*Not used due to the lack of computing resources*)
@@ -207,7 +219,7 @@ We fix seeds and configure cuDNN determinism for fair comparisons. Exact determi
 
 ## 📎 References
 
-- CIFAR‑10 dataset description (Krizhevsky, 2009).
+- [CIFAR‑10 dataset description (Krizhevsky, 2009)](https://www.cs.toronto.edu/~kriz/cifar.html).
 
 ---
 
