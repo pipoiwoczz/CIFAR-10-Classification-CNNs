@@ -185,7 +185,8 @@ data/
 data/*.tar.gz
 data/cifar-10-batches-py/*
 
-# Runs / Grids
+# Runs / Grids / .. (local)
 runs/
 grid*/
 temp/
+results/

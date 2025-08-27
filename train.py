@@ -186,6 +186,7 @@ def parse_args():
     p.add_argument("--drop_out", type=float, default=0.3)
     p.add_argument("--weight_decay", type=float, default=3e-4)
     p.add_argument("--label_smoothing", type=float, default=0.1)
+    p.add_argument("--save_dir", type=str, default="outputs", help="Directory to save model checkpoints")
     return p.parse_args()
 
 
@@ -207,6 +208,8 @@ def main():
         cfg = replace(cfg, weight_decay=args.weight_decay)
     if args.label_smoothing is not None:
         cfg = replace(cfg, label_smoothing=args.label_smoothing)
+    if args.save_dir is not None:
+        cfg = replace(cfg, save_dir=args.save_dir)
 
     print("Using config:\n", cfg)
 
